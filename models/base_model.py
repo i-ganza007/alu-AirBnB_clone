@@ -17,6 +17,8 @@ class BaseModel:
 # In the method below, We used the copy() method for the __dict__ so that we can avoid affecting the actual attributes.
     def to_dict(self):
         MyDict = self.__dict__.copy()
+        MyDict["updated_at"] =  self.updated_at.isoformat()
+        MyDict["created_at"] =  self.created_at.isoformat()
         MyDict['__class__'] = BaseModel.__name__
         return MyDict
 
