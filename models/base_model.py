@@ -15,8 +15,7 @@ class BaseModel:
     def save(self):
         self.updated_at = datetime.utcnow()
         return self.updated_at
-
-   
+    
     def to_dict(self):
         my_dict = self.__dict__.copy()
         my_dict["updated_at"] = self.updated_at.isoformat()
