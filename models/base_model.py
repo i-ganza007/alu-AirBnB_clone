@@ -4,7 +4,6 @@ from datetime import datetime
 
 
 class BaseModel:
-    
     def __init__(self) -> None:
         self.id = str(uuid.uuid4())
         self.created_at = datetime.utcnow()
@@ -17,7 +16,7 @@ class BaseModel:
         self.updated_at = datetime.utcnow()
         return self.updated_at
 
-    # In the method below, we used the copy() method for the __dict__ so that we can avoid affecting the actual attributes.
+   
     def to_dict(self):
         my_dict = self.__dict__.copy()
         my_dict["updated_at"] = self.updated_at.isoformat()
@@ -38,4 +37,3 @@ if __name__ == "__main__":
     for key in my_model_json.keys():
         value = my_model_json[key]
         print("\t{}: ({}) - {}".format(key, type(value), value))
-
