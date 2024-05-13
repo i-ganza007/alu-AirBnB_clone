@@ -8,12 +8,12 @@ class BaseModel:
         self.id = str(uuid.uuid4())
         self.created_at = datetime.utcnow()
         self.updated_at = datetime.utcnow()
-   def __str__(self) -> str:
+    def __str__(self) -> str:
         return f'[{self.__class__.__name__}] ({self.id}) {self.__dict__}'
-   def save(self):
+    def save(self):
         self.updated_at = datetime.utcnow()
         return self.updated_at
-   def to_dict(self):
+    def to_dict(self):
         my_dict = self.__dict__.copy()
         my_dict["updated_at"] = self.updated_at.isoformat()
         my_dict["created_at"] = self.created_at.isoformat()
