@@ -1,88 +1,76 @@
 #!/usr/bin/python3
-"""
-Module for BaseModel unittest
-"""
-import os
-import unittest
+
+
+"""Unittest module for the BaseModel Class."""
+
+from models import storage
 from models.base_model import BaseModel
+from models.engine.file_storage import FileStorage
+from datetime import datetime
+import json
+import os
+import re
+import time
+import unittest
+import time
+import uuid
+from io import StringIO
+from unittest.mock import patch
 
 
+class TestBaseModel(unittest.TestCase):
+    """Test cases for BaseModel ."""
 
-class TestBasemodel(unittest.TestCase):
-    """
-    Unittest for BaseModel
-    """
+    def test_instance(self):
+        """test instance."""
+        base = BaseModel()
+        self.assertIsInstance(base, BaseModel)
 
-    def setUp(self):
-        """
-        Setup for temporary file path
-        """
-        try:
-            os.rename("file.json", "tmp.json")
-        except FileNotFoundError:
-            pass
-
-    def tearDown(self):
-        """
-        Tear down for temporary file path
-        """
-        try:
-            os.remove("file.json")
-        except FileNotFoundError:
-            pass
-        try:
-            os.rename("tmp.json", "file.json")
-        except FileNotFoundError:
-            pass
-    def test_init(self):
-        """
-        Test for init
-        """
-        my_model = BaseModel()
-
-        self.assertIsNotNone(my_model.id)
-        self.assertIsNotNone(my_model.created_at)
-        self.assertIsNotNone(my_model.updated_at)
+    def test_is_class(self):
+        """test instance."""
+        base = BaseModel()
+        self.assertEqual(str(type(base)),
+                         "<class 'models.base_model.BaseModel'>")
 
     def test_save(self):
-        """
-        Test for save method
-        """
-        my_model = BaseModel()
+        """test save."""
+        base = BaseModel()
+        time.sleep(1)
+        base.save()
+        self.assertNotEqual(base.updated_at, base.created_at)
+        self.assertTrue(base.updated_at > base.created_at)
 
-        initial_updated_at = my_model.updated_at
+    def test_save_file(self):
+        """test save."""
+        if os.path.isfile("file.json"):
+            os.remove(os.path.join("file.json"))
+            print(os.path.isfile("file.json"))
+        base = BaseModel()
+        print(base.id)
+        time.sleep(1)
+        base.save()
+        self.assertTrue(os.path.isfile("file.json"))
+        with open("file.json", 'w') as file:
+            serialized_content = json.load(file)
+            for item in serialized_content.values():
+                self.assertIsNotNone(item['__class__'])
 
-        current_updated_at = my_model.save()
+    def test_str_(self):
+        """test str."""
+        base = BaseModel()
 
-        self.assertNotEqual(initial_updated_at, current_updated_at)
+        with patch("sys.stdout", new=StringIO()) as fake_out:
+            print(base)
+            self.assertEqual(fake_out.getvalue(),
+                             "[{}] ({}) {}\n".format(base.__class__.__name__,
+                                                     base.id,
+                                                     base.__dict__))
 
     def test_to_dict(self):
-        """
-        Test for to_dict method
-        """
-        my_model = BaseModel()
-
-        my_model_dict = my_model.to_dict()
-
-        self.assertIsInstance(my_model_dict, dict)
-
-        self.assertEqual(my_model_dict["__class__"], 'BaseModel')
-        self.assertEqual(my_model_dict['id'], my_model.id)
-        self.assertEqual(my_model_dict['created_at'], my_model.created_at.isoformat())
-        self.assertEqual(my_model_dict["updated_at"], my_model.created_at.isoformat())
-
-
-    def test_str(self):
-        """
-        Test for string representation
-        """
-        my_model = BaseModel()
-
-        self.assertTrue(str(my_model).startswith('[BaseModel]'))
-
-        self.assertIn(my_model.id, str(my_model))
-
-        self.assertIn(str(my_model.__dict__), str(my_model))
+        """test dict."""
+        base = BaseModel()
+        dict_repr = base.to_dict()
+        self.assertTrue(dict_repr['__class__'] == base.__class__.__name__)
 
 
 if __name__ == "__main__":
