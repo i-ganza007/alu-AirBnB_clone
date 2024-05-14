@@ -1,21 +1,57 @@
 #!/usr/bin/python3
+"""
+Module for the BaseModel class.
+"""
 import uuid
-import datetime
+from datetime import datetime
+import models
+
+
 class BaseModel:
-    def __init__(self) -> None:
+    def __init__(self, *args, **kwargs):
+        time_format = "%Y-%m-%dT%H:%M:%S.%f"
         self.id = str(uuid.uuid4())
-        self.created_at = datetime.datetime.now().isoformat()
-        self.updated_at = datetime.datetime.now().isoformat()
-
-    def __str__(self) -> str:
-        return f'[{BaseModel.__name__}] ({self.id}) {self.__dict__}'
-        
+        self.created_at = datetime.utcnow()
+        self.updated_at = datetime.utcnow()
+    """
+    """
     def save(self):
-        self.updated_at = datetime.datetime.now().isoformat()
-        return self.updated_at
+        """
 
-# In the method below , We used the copy() method for the __dict__ so that we can avoid affecting the actual attributes .
+        """
+        self.updated_at = datetime.utcnow()
+    """
+    """
     def to_dict(self):
-        MyDict = self.__dict__.copy()
-        MyDict['__class__'] = BaseModel.__name__
-        return MyDict
+        """
+
+        """
+        inst_dict = self.__dict__.copy()
+        inst_dict["__class__"] = self.__class__.__name__
+        inst_dict["created_at"] = self.created_at.isoformat()
+        inst_dict["updated_at"] = self.updated_at.isoformat()
+
+        return inst_dict
+    """
+    """
+    def __str__(self):
+        """
+
+        """
+        class_name = self.__class__.__name__
+        return "[{}] ({}) {}".format(class_name, self.id, self.__dict__)
+    """
+    """
+if __name__ == "__main__":
+    my_model = BaseModel()
+    my_model.name = "My_First_Model"
+    my_model.my_number = 89
+    print(my_model.id)
+    print(my_model)
+    print(type(my_model.created_at))
+    print("--")
+    my_model_json = my_model.to_dict()
+    print(my_model_json)
+    print("JSON of my_model:")
+    for key in my_model_json.keys():
+        print(f"\t{key}: ({type(my_model_json[key])}) - {my_model_json[key]}")
