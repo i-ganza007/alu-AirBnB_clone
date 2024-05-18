@@ -4,7 +4,8 @@ Module for BaseModel unittest
 """
 import os
 import unittest
-from models.base_model import BaseModel
+from models import base_model
+from base_model import BaseModel
 
 
 
