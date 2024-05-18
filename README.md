@@ -51,3 +51,30 @@ File | Description | Attributes
 [review.py](./models/review.py) | Review class for future user/host review information | place_id, user_id, text
 
 ## File storage :baggage_claim:
+The folder [engine](./models/engine/) manages the serialization and deserialization of all the data, following a JSON format.
+
+A FileStorage class is defined in [file_storage.py](./models/engine/file_storage.py) with methods to follow this flow:
+```<object> -> to_dict() -> <dictionary> -> JSON dump -> <json string> -> FILE -> <json string> -> JSON load -> <dictionary> -> <object>```
+
+The [__init__.py](./models/__init__.py) file contains the instantiation of the FileStorage class called **storage**, followed by a call to the method reload() on that instance.
+This allows the storage to be reloaded automatically at initialization, which recovers the serialized data.
+
+## Tests :straight_ruler:
+
+All the code is tested with the **unittest** module.
+The test for the classes are in the [tests](./tests) folder.
+To run the entire test suite simultaneously, execute the following command:
+
+```
+$ python3 unittest -m discover tests
+```
+
+Alternatively, you can specify a single test file to run at a time:
+
+```
+$ python3 unittest -m tests/test_console.py
+```
+
+## Authors :black_nib:
+* **Ian GANZA**  <i.ganza@alustudent.com>
+* **David Ubushakebwimana**  <d.ubushakeb@alustudent.com> 
